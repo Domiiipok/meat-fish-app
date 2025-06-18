@@ -22,3 +22,4 @@ export function useTelegramAuth() {
     .then(res => res.json())
     .then(data => console.log('[✅ AUTH]', data))
     .catch(err => console.error('AUTH ERROR', err))
+}, []) // <-- ✅ Закрытие useEffect
