@@ -8,7 +8,11 @@ RUN npm install
 
 COPY . .
 
-RUN npx nest build
+# ❗ Фикс: дать права на выполнение nest
+RUN chmod +x ./node_modules/.bin/nest
+
+# ❗ Теперь можно безопасно билдить
+RUN npm run build
 
 EXPOSE 3000
 
