@@ -1,4 +1,16 @@
-// src/useTelegramAuth.js
+import { useTelegramAuth } from './useTelegramAuth'
+
+export default function App() {
+  useTelegramAuth() // ← Важно: вызвать хук, иначе авторизация не происходит
+
+  return (
+    <div className="p-4 text-white">
+      <h1 className="text-2xl font-bold">Meat & Fish WebApp</h1>
+      <p>Добро пожаловать в Telegram WebApp.</p>
+    </div>
+  )
+}
+
 
 import { useEffect } from 'react'
 
