@@ -14,14 +14,7 @@ export default function App() {
 
 import { useEffect } from 'react'
 
-export function useTelegramAuth() {
-  useEffect(() => {
-    const tg = window.Telegram.WebApp
 
-    if (!tg.initDataUnsafe?.user) {
-      console.error('Telegram user not found')
-      return
-    }
 
     const initData = tg.initData
     const initDataUnsafe = tg.initDataUnsafe
