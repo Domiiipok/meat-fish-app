@@ -1,4 +1,4 @@
-// src/useTelegramAuth.js ✅
+// src/useTelegramAuth.js
 import { useEffect } from 'react'
 
 export function useTelegramAuth() {
@@ -10,16 +10,16 @@ export function useTelegramAuth() {
       return
     }
 
-    const initData = tg.initData  // ← только ОДИН раз
+    const initData = tg.initData
 
-      fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: tg.initData
-  })
-    .then(res => res.json())
-    .then(data => console.log('[✅ AUTH]', data))
-    .catch(err => console.error('AUTH ERROR', err))
-}, []) // <-- ✅ Закрытие useEffect
+    fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
+      method: 'POST',
+      body: initData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('[✅ AUTH]', data)
+      })
+      .catch(err => console.error('AUTH ERROR', err))
+  }, []) // <-- 🔒 ВОТ ЭТА СТРОКА БЫЛА ОТСУТСТВУЮЩАЯ
+}
