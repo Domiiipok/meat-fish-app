@@ -1,5 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Module } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Controller('auth')
 export class AuthController {
@@ -13,3 +14,10 @@ export class AuthController {
     return { ok: true, user };
   }
 }
+@Module({
+  imports: [UsersModule],
+  controllers: [AuthController],
+  providers: [AuthService],
+})
+export class AuthModule {} // ✅ вот это должно быть экспортом
+
