@@ -12,18 +12,13 @@ export function useTelegramAuth() {
 
     const initData = tg.initData  // ← только ОДИН раз
 
-    fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: tg.initData, // ⚠️ без обёртки в JSON
-})
-  .then(res => res.json())
-  .then(data => console.log('[✅ AUTH]', data))
-  .catch(err => console.error('AUTH ERROR', err))
-
-      })
-      .catch(err => console.error('AUTH ERROR', err))
-  }, [])
-}
+      fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: tg.initData
+  })
+    .then(res => res.json())
+    .then(data => console.log('[✅ AUTH]', data))
+    .catch(err => console.error('AUTH ERROR', err))
