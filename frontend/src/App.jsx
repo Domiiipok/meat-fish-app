@@ -1,3 +1,5 @@
+// src/useTelegramAuth.js
+
 import { useEffect } from 'react'
 
 export function useTelegramAuth() {
@@ -22,7 +24,6 @@ export function useTelegramAuth() {
       .then(res => res.json())
       .then(data => {
         console.log('[✅ AUTH]', data)
-        // сохраняем токен, if needed
       })
       .catch(err => console.error('AUTH ERROR', err))
   }, [])
