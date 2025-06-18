@@ -5,20 +5,6 @@ import { UsersService } from '../users/users.service';
 
 import { Injectable } from '@nestjs/common';
 
-@Injectable()
-export class AuthService {
-  validateTelegramAuth(initData: string) {
-    // ⚠️ Пока без валидации, просто заглушка
-    console.log('Received initData:', initData);
-    
-    return {
-      id: 1,
-      name: 'Test User',
-      initData
-    };
-  }
-}
-
 
 @Injectable()
 export class AuthService {
