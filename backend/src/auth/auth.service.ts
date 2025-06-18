@@ -11,7 +11,8 @@ export class AuthService {
 
   async verifyTelegram(initData: string) {
   try {
-    const parsed = qs.parse(initData.replace(/\\+/g, '%20')) as any;
+    const parsed = qs.parse(initData.replace(/\\u0026/g, '&')) as any;
+
     const hash = parsed.hash;
     delete parsed.hash;
 
@@ -38,10 +39,10 @@ export class AuthService {
     if (!user?.id) throw new UnauthorizedException('Invalid user payload');
 
     const created = await this.usersService.createOrFindUser(user);
-    return { ok: true, user: created };
-  } catch (err) {
-    console.error('VERIFY TELEGRAM ERROR', err);
-    throw new InternalServerErrorException('Telegram Auth Failed');
+          return { ok: true, user: created };
+    } catch (e) {
+      console.error(e);
+      throw new InternalServerErrorException('Telegram Auth Failed');
+    }
   }
 }
-
