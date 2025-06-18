@@ -10,7 +10,7 @@ export function useTelegramAuth() {
       return
     }
 
-    const initData = tg.initData
+    const initData = tg.initData  // ← только ОДИН раз
 
     fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
       method: 'POST',
@@ -26,4 +26,3 @@ export function useTelegramAuth() {
       .catch(err => console.error('AUTH ERROR', err))
   }, [])
 }
-
