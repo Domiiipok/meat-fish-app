@@ -1,11 +1,15 @@
-import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
 
-@Module({
-  imports: [UsersModule],
-  controllers: [AuthController],
-  providers: [AuthService],
-})
-export class AuthModule {}
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('telegram')
+  async authByTelegram(@Body() body: { initData: string }) {
+    const { initData } = body;
+
+    const user = this.authService.validateTelegramAuth(initData);
+    return { ok: true, user };
+  }
+}
