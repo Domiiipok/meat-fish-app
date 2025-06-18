@@ -1,7 +1,7 @@
 import { useTelegramAuth } from './useTelegramAuth'
 
 export default function App() {
-  useTelegramAuth() // ← Важно: вызвать хук, иначе авторизация не происходит
+  useTelegramAuth() // ← вызываем хук
 
   return (
     <div className="p-4 text-white">
@@ -12,12 +12,12 @@ export default function App() {
 }
 
 
+
 import { useEffect } from 'react'
 
 
 
     const initData = tg.initData
-    const initDataUnsafe = tg.initDataUnsafe
 
     fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
       method: 'POST',
@@ -33,3 +33,4 @@ import { useEffect } from 'react'
       .catch(err => console.error('AUTH ERROR', err))
   }, [])
 }
+

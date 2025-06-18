@@ -1,16 +1,16 @@
+// src/useTelegramAuth.js ✅
 import { useEffect } from 'react'
 
 export function useTelegramAuth() {
   useEffect(() => {
     const tg = window.Telegram.WebApp
 
-    if (!tg?.initDataUnsafe?.user) {
+    if (!tg.initDataUnsafe?.user) {
       console.error('Telegram user not found')
       return
     }
 
     const initData = tg.initData
-    const initDataUnsafe = tg.initDataUnsafe
 
     fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
       method: 'POST',
@@ -26,3 +26,4 @@ export function useTelegramAuth() {
       .catch(err => console.error('AUTH ERROR', err))
   }, [])
 }
+
