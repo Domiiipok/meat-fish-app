@@ -10,8 +10,8 @@ export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async verifyTelegram(initData: string) {
-    const parsed = qs.parse(initData.replace(/[\u0000]/g, '%26')) as any;
-
+  try {
+    const parsed = qs.parse(initData.replace(/\\+/g, '%20')) as any;
     const hash = parsed.hash;
     delete parsed.hash;
 
@@ -38,7 +38,10 @@ export class AuthService {
     if (!user?.id) throw new UnauthorizedException('Invalid user payload');
 
     const created = await this.usersService.createOrFindUser(user);
-
     return { ok: true, user: created };
-  } // ← ✅ ВОТ ЗДЕСЬ заканчивается метод
-}   // ← ✅ А ВОТ ЭТА — заканчивает весь класс
+  } catch (err) {
+    console.error('🔴 VERIFY TELEGRAM ERROR:', err);
+    throw new InternalServerErrorException('Telegram Auth Failed');
+  }
+}
+
