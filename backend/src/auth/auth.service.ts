@@ -1,48 +1,59 @@
-import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
-import * as crypto from 'crypto';
-import * as qs from 'querystring';
-import { UsersService } from '../users/users.service';
-
-
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import fetch from 'node-fetch';
 
 @Injectable()
-export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+export class UsersService {
+  private readonly supabaseUrl = process.env.SUPABASE_URL;
+  private readonly supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  async verifyTelegram(initData: string) {
-  try {
-    const parsed = qs.parse(initData.replace(/\\u0026/g, '&')) as any;
+  async createOrFindUser(user: { id: number, first_name?: string, last_name?: string, username?: string }) {
+    try {
+      // 1. Поиск пользователя
+      const query = await fetch(`${this.supabaseUrl}/rest/v1/users?id=eq.${user.id}`, {
+        headers: {
+          apikey: this.supabaseKey,
+          Authorization: `Bearer ${this.supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    const hash = parsed.hash;
-    delete parsed.hash;
+      if (!query.ok) {
+        throw new Error(`[FIND_USER] Supabase error: ${query.status}`);
+      }
 
-    const secret = crypto
-      .createHash('sha256')
-      .update(process.env.TELEGRAM_BOT_TOKEN!)
-      .digest();
+      const existing = await query.json();
 
-    const dataCheckString = Object.keys(parsed)
-      .sort()
-      .map((k) => `${k}=${parsed[k]}`)
-      .join('\n');
+      if (existing.length > 0) {
+        return existing[0];
+      }
 
-    const hmac = crypto
-      .createHmac('sha256', secret)
-      .update(dataCheckString)
-      .digest('hex');
+      // 2. Создание нового пользователя
+      const create = await fetch(`${this.supabaseUrl}/rest/v1/users`, {
+        method: 'POST',
+        headers: {
+          apikey: this.supabaseKey,
+          Authorization: `Bearer ${this.supabaseKey}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify({
+          id: user.id,
+          first_name: user.first_name || '',
+          last_name: user.last_name || '',
+          username: user.username || '',
+        }),
+      });
 
-    if (hmac !== hash) {
-      throw new UnauthorizedException('Invalid Telegram init data');
-    }
+      if (!create.ok) {
+        throw new Error(`[CREATE_USER] Supabase error: ${create.status}`);
+      }
 
-    const user = parsed.user ? JSON.parse(parsed.user) : null;
-    if (!user?.id) throw new UnauthorizedException('Invalid user payload');
+      const created = await create.json();
+      return created[0];
 
-    const created = await this.usersService.createOrFindUser(user);
-          return { ok: true, user: created };
-    } catch (e) {
-      console.error(e);
-      throw new InternalServerErrorException('Telegram Auth Failed');
+    } catch (err) {
+      console.error('[❌ UsersService Error]', err);
+      throw new InternalServerErrorException('Failed to create or find user');
     }
   }
 }
