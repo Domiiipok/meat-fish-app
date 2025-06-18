@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import * as crypto from 'crypto';
 import * as qs from 'querystring';
 import { UsersService } from '../users/users.service';
@@ -40,7 +40,7 @@ export class AuthService {
     const created = await this.usersService.createOrFindUser(user);
     return { ok: true, user: created };
   } catch (err) {
-    console.error('🔴 VERIFY TELEGRAM ERROR:', err);
+    console.error('VERIFY TELEGRAM ERROR', err);
     throw new InternalServerErrorException('Telegram Auth Failed');
   }
 }
