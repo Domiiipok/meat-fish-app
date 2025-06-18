@@ -1,19 +1,18 @@
-FROM node:18
+# Dockerfile
+
+FROM node:20
 
 WORKDIR /app
 
+# Установка зависимостей
 COPY package*.json ./
-
 RUN npm install
 
+# Копируем остальной код
 COPY . .
 
-# ❗ Фикс: дать права на выполнение nest
-RUN chmod +x ./node_modules/.bin/nest
-
-# ❗ Теперь можно безопасно билдить
+# Компиляция
 RUN npm run build
 
 EXPOSE 3000
-
 CMD ["node", "dist/main"]
