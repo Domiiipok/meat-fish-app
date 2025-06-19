@@ -6,7 +6,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('telegram')
-  async authByTelegram(@Body('initData') initData: string) {
-    return this.authService.verifyTelegram(initData);
+  async authTelegram(@Body() body: { initData: string }) {
+    await this.authService.verifyTelegram(body.initData);
+    return { message: '✅ Telegram auth successful' };
   }
 }

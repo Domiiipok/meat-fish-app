@@ -19,18 +19,19 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async authByTelegram(initData) {
-        return this.authService.verifyTelegram(initData);
+    async authTelegram(body) {
+        await this.authService.verifyTelegram(body.initData);
+        return { message: '✅ Telegram auth successful' };
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('telegram'),
-    __param(0, (0, common_1.Body)('initData')),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "authByTelegram", null);
+], AuthController.prototype, "authTelegram", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

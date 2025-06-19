@@ -13,26 +13,20 @@ let UsersService = class UsersService {
     constructor() {
         this.supabase = (0, supabase_js_1.createClient)(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     }
-    async createOrFindUser(telegramUser) {
-        const telegramId = telegramUser.id;
-        const { data: existing, error: findError } = await this.supabase
+    async upsertUser(user) {
+        const { error } = await this.supabase
             .from('users')
-            .select('*')
-            .eq('telegram_id', telegramId)
-            .single();
-        if (existing)
-            return existing;
-        const { data, error } = await this.supabase.from('users').insert([
-            {
-                telegram_id: telegramUser.id,
-                username: telegramUser.username,
-                first_name: telegramUser.first_name,
-                last_name: telegramUser.last_name,
-            },
-        ]).select().single();
+            .upsert({
+            id: user.id,
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            photo_url: user.photo_url,
+            language_code: user.language_code,
+            is_premium: user.is_premium,
+        });
         if (error)
-            throw error;
-        return data;
+            throw new Error(error.message);
     }
 };
 exports.UsersService = UsersService;

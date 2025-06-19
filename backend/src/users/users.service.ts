@@ -8,27 +8,19 @@ export class UsersService {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  async createOrFindUser(telegramUser: any) {
-    const telegramId = telegramUser.id;
-
-    const { data: existing, error: findError } = await this.supabase
+  async upsertUser(user: any) {
+    const { error } = await this.supabase
       .from('users')
-      .select('*')
-      .eq('telegram_id', telegramId)
-      .single();
+      .upsert({
+        id: user.id,
+        username: user.username,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        photo_url: user.photo_url,
+        language_code: user.language_code,
+        is_premium: user.is_premium,
+      });
 
-    if (existing) return existing;
-
-    const { data, error } = await this.supabase.from('users').insert([
-      {
-        telegram_id: telegramUser.id,
-        username: telegramUser.username,
-        first_name: telegramUser.first_name,
-        last_name: telegramUser.last_name,
-      },
-    ]).select().single();
-
-    if (error) throw error;
-    return data;
+    if (error) throw new Error(error.message);
   }
 }

@@ -1,8 +1,4 @@
-node_modules
-dist
-.env
-.git
-.gitignore
-Dockerfile
-docker-compose.yml
-*.log
+cd backend
+rm -rf node_modules package-lock.json
+npm install
+npx tsc --noEmit

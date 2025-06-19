@@ -52,29 +52,36 @@ let AuthService = class AuthService {
         this.usersService = usersService;
     }
     async verifyTelegram(initData) {
-        const parsed = qs.parse(initData.replace(/&/g, '%26'));
+        // ✅ 1. Парсим initData
+        const parsed = qs.parse(initData.replace(/\+/g, '%20'));
         const hash = parsed.hash;
         delete parsed.hash;
+        // ✅ 2. Секрет на основе BOT_TOKEN
         const secret = crypto
             .createHash('sha256')
             .update(process.env.TELEGRAM_BOT_TOKEN)
             .digest();
+        // ✅ 3. Формируем строку для подписи
         const dataCheckString = Object.keys(parsed)
             .sort()
-            .map((k) => `${k}=${parsed[k]}`)
+            .map((key) => `${key}=${parsed[key]}`)
             .join('\n');
+        // ✅ 4. HMAC-подпись
         const hmac = crypto
             .createHmac('sha256', secret)
             .update(dataCheckString)
             .digest('hex');
+        // ✅ 5. Сравнение подписи
         if (hmac !== hash) {
             throw new common_1.UnauthorizedException('Invalid Telegram init data');
         }
+        // ✅ 6. Парсим user из строки
         const user = parsed.user ? JSON.parse(parsed.user) : null;
-        if (!(user === null || user === void 0 ? void 0 : user.id))
+        if (!(user === null || user === void 0 ? void 0 : user.id)) {
             throw new common_1.UnauthorizedException('Invalid user payload');
-        const created = await this.usersService.createOrFindUser(user);
-        return { ok: true, user: created };
+        }
+        // ✅ 7. Сохраняем пользователя в Supabase
+        await this.usersService.upsertUser(user);
     }
 };
 exports.AuthService = AuthService;
