@@ -1,25 +1,27 @@
-// src/useTelegramAuth.js
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
 export function useTelegramAuth() {
   useEffect(() => {
-    const tg = window.Telegram.WebApp
+    const tg = window.Telegram.WebApp;
 
     if (!tg.initDataUnsafe?.user) {
-      console.error('Telegram user not found')
-      return
+      console.error('Telegram user not found');
+      return;
     }
 
-    const initData = tg.initData
+    const initData = tg.initData;
 
     fetch(`${import.meta.env.VITE_API_URL}/auth/telegram`, {
       method: 'POST',
-      body: initData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ initData }),
     })
-      .then(res => res.json())
-      .then(data => {
-        console.log('[✅ AUTH]', data)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('✅ AUTH', data);
       })
-      .catch(err => console.error('AUTH ERROR', err))
-  }, []) // <-- 🔒 ВОТ ЭТА СТРОКА БЫЛА ОТСУТСТВУЮЩАЯ
+      .catch((err) => console.error('AUTH ERROR', err));
+  }, []);
 }

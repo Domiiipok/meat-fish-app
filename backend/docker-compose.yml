@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    build: .                 # ⬅️ исправлено
     container_name: meat-fish-backend
     restart: always
     env_file:
-      - ./backend/.env
+      - ./.env
     ports:
       - "3000:3000"
     volumes:
-      - ./backend:/app
+      - ./:/app
     command: npm run start:dev
