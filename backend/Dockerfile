@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 # Убедимся, что файлы на которых работает Nest CLI доступны для выполнения
-RUN chmod +x ./node_modules/.bin/npx
+
 RUN chmod +x ./node_modules/.bin/nest
 
 COPY . .
