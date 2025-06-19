@@ -6,7 +6,8 @@ COPY package*.json ./
 
 RUN npm install
 
-# Добавим установку прав доступа для Nest CLI
+# Убедимся, что файлы на которых работает Nest CLI доступны для выполнения
+RUN chmod +x ./node_modules/.bin/npx
 RUN chmod +x ./node_modules/.bin/nest
 
 COPY . .
@@ -14,5 +15,4 @@ COPY . .
 RUN npm run build
 
 EXPOSE 3000
-
 CMD ["node", "dist/main.js"]
